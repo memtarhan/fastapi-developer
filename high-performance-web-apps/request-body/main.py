@@ -1,9 +1,9 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
 import uvicorn
 from sqlalchemy import Column, Integer, Float, String
 from sqlalchemy.ext.declarative import declarative_base
 from typing import Dict
+from pydantic import BaseModel, SecretStr, HttpUrl, Json, validator, field_validator
 
 
 class Product(BaseModel):
@@ -83,6 +83,19 @@ class Student(BaseModel):
 @app.post("/student/")
 async def add_new_student1(student: Student):
     return student
+
+
+class Employee(BaseModel):
+    ID: str
+    pwd: SecretStr
+    salary: int
+    details: Json
+    FBProfile: HttpUrl
+
+    @field_validator('ID')
+    def alphanum(cls, x):
+        if not x.isalnum():
+            raise (ValueError('Must be alphanumeric'))
 
 
 if __name__ == "__main__":
