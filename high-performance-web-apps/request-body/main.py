@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import uvicorn
 from sqlalchemy import Column, Integer, Float, String
 from sqlalchemy.ext.declarative import declarative_base
+from typing import Dict
 
 
 class Product(BaseModel):
@@ -71,6 +72,17 @@ async def add_new_product2(product: Product):
 
     products.append(product)
     return products
+
+
+class Student(BaseModel):
+    student_id: int
+    name: str
+    subjects: Dict[str, int]
+
+
+@app.post("/student/")
+async def add_new_student1(student: Student):
+    return student
 
 
 if __name__ == "__main__":
