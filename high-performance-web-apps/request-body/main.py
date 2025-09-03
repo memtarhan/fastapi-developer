@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import uvicorn
 from sqlalchemy import Column, Integer, Float, String
 from sqlalchemy.ext.declarative import declarative_base
-from typing import Dict
+from typing import Dict, List
 from pydantic import BaseModel, SecretStr, HttpUrl, Json, validator, field_validator
 
 
@@ -96,6 +96,34 @@ class Employee(BaseModel):
     def alphanum(cls, x):
         if not x.isalnum():
             raise (ValueError('Must be alphanumeric'))
+
+
+@app.post("/employee/")
+async def add_new_employee1(employee: Employee):
+    return employee
+
+
+class Suppliers(BaseModel):
+    supplierID: int
+    supplierName: str
+
+
+class Products(BaseModel):
+    productID: int
+    productName: str
+    price: int
+    suppler: List[Suppliers]
+
+
+class Customers(BaseModel):
+    custID: int
+    custName: str
+    products: List[Products]
+
+
+@app.post("/customer")
+async def get_customer(c1: Customers):
+    return c1
 
 
 if __name__ == "__main__":
