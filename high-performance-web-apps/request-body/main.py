@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
+from sqlalchemy import Column, Integer, Float, String
+from sqlalchemy.ext.declarative import declarative_base
 
 
 class Product(BaseModel):
@@ -18,7 +20,35 @@ class Product(BaseModel):
                 "stock": 50
             }
         }
+        from_attributes = True  # orm_mode
 
+
+Base = declarative_base()
+
+
+class ProductORM(Base):
+    __tablename__ = 'products'
+    product_id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String(63), unique=True)
+    price = Column(Float)
+    stock = Column(Integer)
+
+
+prod_alchemy = ProductORM(
+    product_id=1,
+    name='Ceiling Fan',
+    price=2000,
+    stock=50
+)
+product = Product.model_validate(prod_alchemy)
+
+product2 = Product(
+    product_id=2,
+    name='LED Bulb',
+    price=250,
+
+    stock=50)
+prod_alchemy = ProductORM(**product2.model_dump())
 
 app = FastAPI()
 
