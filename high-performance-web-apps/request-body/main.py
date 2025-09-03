@@ -9,6 +9,16 @@ class Product(BaseModel):
     price: float
     stock: int
 
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "product_id": 1,
+                "name": "Ceiling Fan",
+                "price": 2000,
+                "stock": 50
+            }
+        }
+
 
 app = FastAPI()
 
